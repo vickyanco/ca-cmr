@@ -3,7 +3,7 @@ import matplotlib.pyplot as plt
 import os
 
 # Define the folder path containing the DICOM files
-folder_path = 'C:/Users/USUARIO/Desktop/51'
+folder_path = "C:/Users/USUARIO/Desktop/51"
 
 # List to store the DICOM datasets
 dicom_datasets = []
