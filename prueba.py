@@ -1,10 +1,5 @@
 import pydicom
-import matplotlib.pyplot as plt
 import os
-import matplotlib
-
-# Ensure an interactive backend
-matplotlib.use('TkAgg')
 
 # Define the folder path containing the DICOMDIR files
 folder_path = "C:/Users/USUARIO/Desktop/51"
@@ -14,6 +9,9 @@ dicomdir_path = os.path.join(folder_path, 'DICOMDIR')
 
 # Read the DICOMDIR file
 dicomdir = pydicom.dcmread(dicomdir_path)
+
+# List to store image dimensions
+image_dimensions = []
         
 # Iterate over the patient records in the DICOMDIR
 for patient_record in dicomdir.patient_records:
@@ -44,20 +42,18 @@ for patient_record in dicomdir.patient_records:
                # Check if pixel data exists
                 if hasattr(dicom_dataset, 'pixel_array'):
                     try:
-                        # Get the pixel data (image data)
-                        image_data = dicom_dataset.pixel_array
-
-                        # Display the image
-                        plt.figure()  # Create a new figure for each image
-                        plt.imshow(image_data, cmap=plt.cm.gray)
-                        plt.title(f"File: {dicom_file_path}")
-                        plt.axis('off')  # Hide the axis
-                        plt.show(block=False)  # Ensure the call does not block execution
-                        plt.pause(1)  # Pause briefly to ensure the plot is rendered
-                        plt.close()  # Close the figure after displaying
+                        # Get the image size
+                        rows = dicom_dataset.Rows
+                        columns = dicom_dataset.Columns
+                        image_dimensions.append((rows, columns))
                     except Exception as e:
                         print(f"Error processing file {dicom_file_path}: {e}")
                 else:
                     print(f"No pixel data found in file: {dicom_file_path}")
 
+# Print the list of image dimensions
+print("Image Dimensions:")
+for dims in image_dimensions:
+    print(f"Size: {dims[0]}x{dims[1]} pixels")
+    
 print("Finished processing files.")
