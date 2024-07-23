@@ -13,9 +13,15 @@ dicomdir = pydicom.dcmread(dicomdir_path)
 
 # List to store image dimensions
 data = []
-        
+
+# Counter for patient numbers
+patient_number = 1
+
 # Iterate over the patient records in the DICOMDIR
 for patient_record in dicomdir.patient_records:
+    current_patient_number = patient_number
+    print(f"Processing Patient {current_patient_number}")
+
     # Iterate over the studies for each patient
     for study_record in patient_record.children:
         # Iterate over the series for each study
@@ -38,30 +44,43 @@ for patient_record in dicomdir.patient_records:
                     continue
 
                 # Read the DICOM file
-                dicom_dataset = pydicom.dcmread(dicom_file_path)
+                try:
+                    dicom_dataset = pydicom.dcmread(dicom_file_path)
+                except Exception as e:
+                    print(f"Error reading file {dicom_file_path}: {e}")
+                    continue
 
-               # Check if pixel data exists
+                # Check if pixel data exists
                 if hasattr(dicom_dataset, 'pixel_array'):
                     try:
                         # Get the image size
                         rows = dicom_dataset.Rows
                         columns = dicom_dataset.Columns
                         data.append({
+                            'Patient Number': current_patient_number,
                             'File ID': relative_path,
                             'Rows': rows,
                             'Columns': columns
                         })
                     except Exception as e:
-                        print(f"Error processing file {dicom_file_path}: {e}")
+                        print(f"Error processing pixel data in file {dicom_file_path}: {e}")
                 else:
                     print(f"No pixel data found in file: {dicom_file_path}")
+
+    patient_number += 1
 
 # Create a DataFrame
 df = pd.DataFrame(data)
 
+# Group by patient number
+grouped = df.groupby('Patient Number')
+
 # Save the DataFrame to an Excel file
-output_file_path = os.path.join(folder_path, 'dicom_image_sizes.xlsx')
-df.to_excel(output_file_path, index=False)
+output_file_path = os.path.join(folder_path, 'dicom_image_sizes_grouped_by_patient.xlsx')
+with pd.ExcelWriter(output_file_path, engine='openpyxl') as writer:
+    for patient_number, group in grouped:
+        sheet_name = f"Patient_{patient_number}"
+        group.to_excel(writer, sheet_name=sheet_name, index=False)
 
 print(f"Excel file created at: {output_file_path}")
 print("Finished processing files.")
