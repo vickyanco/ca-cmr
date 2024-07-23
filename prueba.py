@@ -1,5 +1,6 @@
-import pydicom
 import os
+import pydicom
+import pandas as pd
 
 # Define the folder path containing the DICOMDIR files
 folder_path = "C:/Users/USUARIO/Desktop/51"
@@ -11,7 +12,7 @@ dicomdir_path = os.path.join(folder_path, 'DICOMDIR')
 dicomdir = pydicom.dcmread(dicomdir_path)
 
 # List to store image dimensions
-image_dimensions = []
+data = []
         
 # Iterate over the patient records in the DICOMDIR
 for patient_record in dicomdir.patient_records:
@@ -45,15 +46,22 @@ for patient_record in dicomdir.patient_records:
                         # Get the image size
                         rows = dicom_dataset.Rows
                         columns = dicom_dataset.Columns
-                        image_dimensions.append((rows, columns))
+                        data.append({
+                            'File ID': relative_path,
+                            'Rows': rows,
+                            'Columns': columns
+                        })
                     except Exception as e:
                         print(f"Error processing file {dicom_file_path}: {e}")
                 else:
                     print(f"No pixel data found in file: {dicom_file_path}")
 
-# Print the list of image dimensions
-print("Image Dimensions:")
-for dims in image_dimensions:
-    print(f"Size: {dims[0]}x{dims[1]} pixels")
-    
+# Create a DataFrame
+df = pd.DataFrame(data)
+
+# Save the DataFrame to an Excel file
+output_file_path = os.path.join(folder_path, 'dicom_image_sizes.xlsx')
+df.to_excel(output_file_path, index=False)
+
+print(f"Excel file created at: {output_file_path}")
 print("Finished processing files.")
