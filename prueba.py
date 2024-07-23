@@ -22,10 +22,19 @@ for patient_record in dicomdir.patient_records:
     current_patient_number = patient_number
     print(f"Processing Patient {current_patient_number}")
 
+    # Check patient name or ID to ensure we're iterating correctly
+    print(f"Patient Record: {patient_record.PatientID if 'PatientID' in patient_record else 'Unknown ID'}")
+
     # Iterate over the studies for each patient
     for study_record in patient_record.children:
+        # Check study details
+        print(f"  Study: {study_record.StudyID if 'StudyID' in study_record else 'Unknown Study ID'}")
+
         # Iterate over the series for each study
         for series_record in study_record.children:
+            # Check series details
+            print(f"    Series: {series_record.SeriesNumber if 'SeriesNumber' in series_record else 'Unknown Series Number'}")
+
             # Iterate over the images for each series
             for image_record in series_record.children:
                 # Get the relative path to the DICOM file
@@ -40,14 +49,14 @@ for patient_record in dicomdir.patient_records:
 
                 # Ensure the path exists
                 if not os.path.exists(dicom_file_path):
-                    print(f"File not found: {dicom_file_path}")
+                    print(f"      File not found: {dicom_file_path}")
                     continue
 
                 # Read the DICOM file
                 try:
                     dicom_dataset = pydicom.dcmread(dicom_file_path)
                 except Exception as e:
-                    print(f"Error reading file {dicom_file_path}: {e}")
+                    print(f"      Error reading file {dicom_file_path}: {e}")
                     continue
 
                 # Check if pixel data exists
@@ -62,10 +71,11 @@ for patient_record in dicomdir.patient_records:
                             'Rows': rows,
                             'Columns': columns
                         })
+                        print(f"      Added image {relative_path} with size ({rows}x{columns})")
                     except Exception as e:
-                        print(f"Error processing pixel data in file {dicom_file_path}: {e}")
+                        print(f"      Error processing pixel data in file {dicom_file_path}: {e}")
                 else:
-                    print(f"No pixel data found in file: {dicom_file_path}")
+                    print(f"      No pixel data found in file: {dicom_file_path}")
 
     patient_number += 1
 
