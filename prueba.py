@@ -5,9 +5,6 @@ import pandas as pd
 # Define the folder path containing the DICOMDIR files
 folder_path = "C:/Users/USUARIO/Desktop/51"
 
-# Define the folder path to save files
-folder_path_resul = "C:/Users/USUARIO/Desktop/resul"
-
 # Path to the DICOMDIR file
 dicomdir_path = os.path.join(folder_path, 'DICOMDIR')
 
@@ -58,7 +55,6 @@ for patient_record in dicomdir.patient_records:
                             'Rows': rows,
                             'Columns': columns
                         })
-                        print(f"Added image {relative_path} with size ({rows}x{columns})")
                     except Exception as e:
                         print(f"Error processing pixel data in file {dicom_file_path}: {e}")
                 else:
@@ -78,9 +74,4 @@ if not df.empty:
 else:
     print("No images found with pixel data.")
 
-# Save the DataFrame to an Excel file
-output_file_path = os.path.join(folder_path_resul, 'dicom_image_min.xlsx')
-df.to_excel(output_file_path, index=False)
-
-print(f"Excel file created at: {output_file_path}")
 print("Finished processing files.")
