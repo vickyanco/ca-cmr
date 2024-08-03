@@ -15,13 +15,14 @@ dicomdir = pydicom.dcmread(dicomdir_path)
 data = []
 
 # Function to read DICOM files and extract pixel data
-def read_dicom_files(folder_path):
-    for root, dirs, files in os.walk(folder_path):
+def read_dicom_files(dicomdir):
+    for root, dirs, files in os.walk(dicomdir):
         for file in files:
             if file.endswith(".dcm"):
                 dicom_file_path = os.path.join(root, file)
                 try:
                     dicom_dataset = pydicom.dcmread(dicom_file_path)
+                    print(f"Reading file: {dicom_file_path}")
                     if hasattr(dicom_dataset, 'pixel_array'):
                         image_data = dicom_dataset.pixel_array
                         rows = dicom_dataset.Rows
@@ -31,6 +32,9 @@ def read_dicom_files(folder_path):
                             'Rows': rows,
                             'Columns': columns
                         })
+                        print(f"Added data for file: {dicom_file_path}")
+                    else:
+                        print(f"No pixel data found in file: {dicom_file_path}")
                 except Exception as e:
                     print(f"Error reading file {dicom_file_path}: {e}")
 
