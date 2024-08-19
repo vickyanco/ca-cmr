@@ -16,11 +16,11 @@ for base_dir in base_dirs:
     print(f"Processing base directory: {base_dir}")
     for root, dirs, files in os.walk(base_dir):
         for filename in files:
-            if filename.endswith(".dcm"):
-                filepath = os.path.join(root, filename)
-                label = "positive" if "Pos" in set_type else "negative"
-                data.append([filepath, label, set_type])
-                print(f"Added: {filepath}, {label}, {set_type}")
+            filepath = os.path.join(root, filename)
+            # Assume all files are DICOM if they don't have an extension
+            label = "positive" if "Pos" in set_type else "negative"
+            data.append([filepath, label, set_type])
+            print(f"Added: {filepath}, {label}, {set_type}")
 
 # Save to CSV
 df = pd.DataFrame(data, columns=["filepath", "label", "set"])
