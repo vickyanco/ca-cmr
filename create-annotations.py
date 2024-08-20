@@ -1,5 +1,6 @@
 import pandas as pd
 import os
+import pydicom
 
 # Define the base directories
 base_dirs = ["D:/CA EN CMR/input/Train/PosTrain", 
@@ -18,12 +19,22 @@ for base_dir in base_dirs:
         for filename in files:
             if filename != "DICOMDIR":  # Exclude files named 'DICOMDIR'
                 filepath = os.path.join(root, filename)
-                # Assume all files are DICOM if they don't have an extension
-                label = "positive" if "Pos" in set_type else "negative"
-                data.append([filepath, label, set_type])
-                print(f"Added: {filepath}, {label}, {set_type}")
+                try:
+                    # Attempt to read the DICOM file
+                    dicom_file = pydicom.dcmread(filepath)
+
+                    # Check if the DICOM file contains pixel data
+                    if hasattr(dicom_file, 'PixelData'):
+                        label = "positive" if "Pos" in set_type else "negative"
+                        data.append([filepath, label, set_type])
+                        print(f"Added: {filepath}, {label}, {set_type}")
+                    else:
+                        print(f"No pixel data found in {filepath}")
+
+                except Exception as e:
+                    print(f"Could not read DICOM file {filepath}: {e}")
 
 # Save to CSV
 df = pd.DataFrame(data, columns=["filepath", "label", "set"])
-df.to_csv('dicom_files.csv', index=False)
+df.to_csv('valid_dicom_files.csv', index=False)
 print("CSV file has been created successfully!")
