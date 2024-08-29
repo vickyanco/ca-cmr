@@ -1,3 +1,9 @@
+# file: CNN.py
+# description: Implements a CNN that can be used to analyze DICOM images
+# author: María Victoria Anconetani
+# date: 29/08/2024
+
+import pandas as pd
 import tensorflow as tf
 from tensorflow.python.keras import layers, models
 
@@ -65,8 +71,15 @@ class MyCNN:
 
     def predict(self, x):
         return self.model.predict(x)
-    
+
+df = pd.read_csv('valid_dicom_files.csv')
+
+train_df = df[(df['set'] == 'NegTrain') | (df['set'] == 'PosTrain')]
+img_train = train_df['filepath'].values
+
+val_df = df[(df['set'] == 'NegVal') |(df['set'] == 'PosVal')]
+img_val = val_df['filepath'].values
 
 cnn_model = MyCNN(input_shape=(256, 256, 1), num_classes=2)
-cnn_model.train(train_data, validation_data, epochs=10)
+cnn_model.train(img_train, img_val, epochs=10)
 cnn_model.save_model('my_cnn_model.h5')
