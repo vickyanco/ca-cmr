@@ -65,3 +65,8 @@ class MyCNN:
 
     def predict(self, x):
         return self.model.predict(x)
+    
+
+cnn_model = MyCNN(input_shape=(256, 256, 1), num_classes=2)
+cnn_model.train(train_data, validation_data, epochs=10)
+cnn_model.save_model('my_cnn_model.h5')
