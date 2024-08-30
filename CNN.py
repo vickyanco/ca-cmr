@@ -7,7 +7,6 @@ import pandas as pd
 import tensorflow as tf
 from tensorflow.python.keras import layers, models
 from keras import layers
-from keras.layers import BatchNormalization
 
 class MyCNN:
     def __init__(self, input_shape=(256, 256, 1), num_classes=2):
@@ -74,6 +73,20 @@ class MyCNN:
 
     def predict(self, x):
         return self.model.predict(x)
+    
+def load_and_preprocess_image(path, label, img_height=256, img_width=256):
+    image = tf.io.read_file(path)  
+    image = tf.image.decode_image(image, channels=1)  
+    image = tf.image.resize(image, [img_height, img_width])  
+    image = image / 255.0  
+    return image, label
+    
+def create_dataset(filepaths, labels, batch_size=32):
+    dataset = tf.data.Dataset.from_tensor_slices((filepaths, labels))  
+    dataset = dataset.map(load_and_preprocess_image, num_parallel_calls=tf.data.AUTOTUNE)  
+    dataset = dataset.batch(batch_size)  
+    dataset = dataset.prefetch(tf.data.AUTOTUNE)  
+    return dataset
 
 df = pd.read_csv('valid_dicom_files.csv')
 
