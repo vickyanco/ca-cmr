@@ -80,22 +80,24 @@ def load_and_preprocess_image(path, label, img_height=256, img_width=256):
     image = tf.image.resize(image, [img_height, img_width])  
     image = image / 255.0  
     return image, label
-    
-def create_dataset(filepaths, labels, batch_size=32):
-    dataset = tf.data.Dataset.from_tensor_slices((filepaths, labels))  
-    dataset = dataset.map(load_and_preprocess_image, num_parallel_calls=tf.data.AUTOTUNE)  
-    dataset = dataset.batch(batch_size)  
-    dataset = dataset.prefetch(tf.data.AUTOTUNE)  
-    return dataset
+
+
 
 df = pd.read_csv('valid_dicom_files.csv')
 
 train_df = df[(df['set'] == 'NegTrain') | (df['set'] == 'PosTrain')]
-img_train = (train_df['filepath'].values, train_df['label'].values)
-
 val_df = df[(df['set'] == 'NegVal') |(df['set'] == 'PosVal')]
-img_val = (val_df['filepath'].values, train_df['label'].values)
+
+# Create TensorFlow datasets
+train_ds = tf.data.Dataset.from_tensor_slices((train_df['filepath'].values, train_df['label'].values))
+train_ds = train_ds.map(load_and_preprocess_image).batch(32)
+
+val_ds = tf.data.Dataset.from_tensor_slices((val_df['filepath'].values, val_df['label'].values))
+val_ds = val_ds.map(load_and_preprocess_image).batch(32)
+
+#img_train = (train_df['filepath'].values, train_df['label'].values)
+#img_val = (val_df['filepath'].values, train_df['label'].values)
 
 cnn_model = MyCNN(input_shape=(256, 256, 1), num_classes=2)
-cnn_model.train(img_train, img_val, epochs=10)
+cnn_model.train(train_ds, val_ds, epochs=10)
 cnn_model.save_model('my_cnn_model.h5')
