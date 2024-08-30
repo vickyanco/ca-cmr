@@ -6,6 +6,8 @@
 import pandas as pd
 import tensorflow as tf
 from tensorflow.python.keras import layers, models
+from keras import layers
+from keras.layers import BatchNormalization
 
 class MyCNN:
     def __init__(self, input_shape=(256, 256, 1), num_classes=2):
