@@ -15,22 +15,23 @@ class MyCNN:
         
     def build_model(self):
         model = models.Sequential()
-        # First Conv Block
+
+        # First Convolutional Block
         model.add(layers.Conv2D(64, (3, 3), strides=2, padding='same', input_shape=self.input_shape))
         model.add(layers.BatchNormalization())
         model.add(layers.ReLU())
 
-        # Second Conv Block
+        # Second Convolutional Block
         model.add(layers.Conv2D(128, (3, 3), strides=2, padding='same'))
         model.add(layers.BatchNormalization())
         model.add(layers.ReLU())
 
-        # Third Conv Block
+        # Third Convolutional Block
         model.add(layers.Conv2D(256, (3, 3), strides=2, padding='same'))
         model.add(layers.BatchNormalization())
         model.add(layers.ReLU())
 
-        # Fourth Conv Block
+        # Fourth Convolutional Block
         model.add(layers.Conv2D(512, (3, 3), strides=2, padding='same'))
         model.add(layers.BatchNormalization())
         model.add(layers.ReLU())
