@@ -78,10 +78,10 @@ class MyCNN:
 df = pd.read_csv('valid_dicom_files.csv')
 
 train_df = df[(df['set'] == 'NegTrain') | (df['set'] == 'PosTrain')]
-img_train = (train_df['filepath'].values, train_df['labels'].values)
+img_train = (train_df['filepath'].values, train_df['label'].values)
 
 val_df = df[(df['set'] == 'NegVal') |(df['set'] == 'PosVal')]
-img_val = (val_df['filepath'].values, train_df['labels'].values)
+img_val = (val_df['filepath'].values, train_df['label'].values)
 
 cnn_model = MyCNN(input_shape=(256, 256, 1), num_classes=2)
 cnn_model.train(img_train, img_val, epochs=10)
