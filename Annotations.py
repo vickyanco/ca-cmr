@@ -1,3 +1,8 @@
+# file: create-annotations.py
+# description: Creats a CSV file with all the paths.
+# author: María Victoria Anconetani
+# date: 20/07/2024
+
 import pandas as pd
 import os
 import pydicom

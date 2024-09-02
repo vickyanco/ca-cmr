@@ -1,3 +1,8 @@
+# file: PreProcessing.py
+# description: Process DICOM files to feed the CNN
+# author: María Victoria Anconetani
+# date: 01/08/2024
+
 import pandas as pd
 import numpy as np
 import pydicom
