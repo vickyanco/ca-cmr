@@ -7,7 +7,7 @@ import pandas as pd
 import numpy as np
 import pydicom
 import torch
-
+import tensorflow as tf
 from skimage.transform import resize
 from torch.utils.data import Dataset, DataLoader
 
@@ -49,9 +49,17 @@ class DICOMDataset(Dataset):
         
         return image, label
 
-# Configuration
-csv_path = 'valid_dicom_files.csv'
-dataset = DICOMDataset(csv_path, new_size=(256, 256))
-
-# Load data in a DataLoader
-dataloader = DataLoader(dataset, batch_size=32, shuffle=True)
+def load_and_preprocess_image(img_path, label, img_height=256, img_width=256):
+    dicom_file = pydicom.dcmread(img_path)
+    image = dicom_file.pixel_array
+    
+    # Normalize the image
+    image = (image - np.min(image)) / (np.max(image) - np.min(image))
+    
+    # Resize the image
+    image = tf.image.resize(image, [img_height, img_width])
+    
+    # Add a channel dimension
+    image = tf.expand_dims(image, axis=-1)
+    
+    return image, label
