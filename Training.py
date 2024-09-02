@@ -1,3 +1,8 @@
+# file: Training.py
+# description: Trains the CNN with my data
+# author: María Victoria Anconetani
+# date: 29/08/2024
+
 import pandas as pd
 import tensorflow as tf
 from PreProcessing import load_and_preprocess_image
