@@ -11,55 +11,36 @@ import tensorflow as tf
 from skimage.transform import resize
 from torch.utils.data import Dataset, DataLoader
 
-class DICOMDataset(Dataset):
-    def __init__(self, csv_file, transform=None, new_size=(256, 256)):
-        # Load the CSV file containing paths and labels
-        self.df = pd.read_csv(csv_file)
-        self.transform = transform
-        self.new_size = new_size
+def preprocess_from_csv(csv_file, img_height=256, img_width=256):
+    df = pd.read_csv(csv_file)
 
-    def __len__(self):
-        # Return the number of images
-        return len(self.df)
+    # Initialize lists to hold the processed images and labels
+    images = []
+    labels = []
 
-    def __getitem__(self, idx):
-        # Get the image file path from the CSV
-        img_path = self.df.iloc[idx]['filepath']
+    # Loop through each row in the DataFrame
+    for index, row in df.iterrows():
+        img_path = row['filepath']
+        label = row['label']
+
+        # Convert label to 0 or 1
+        label = 1 if label.lower() == 'positive' else 0
+
+        # Read and preprocess the DICOM image
         dicom_file = pydicom.dcmread(img_path)
         image = dicom_file.pixel_array
-        
+
         # Normalize the image
         image = (image - np.min(image)) / (np.max(image) - np.min(image))
-        
+
         # Resize the image
-        image = resize(image, self.new_size, anti_aliasing=True)
-        
-        # Add a channel dimension 
-        image = image[np.newaxis, :, :]
+        image = tf.image.resize(image, [img_height, img_width])
 
-        # Convert the image to a tensor
-        image = torch.from_numpy(image).float()
-        
-        # Get the label
-        label = self.df.iloc[idx]['label']  # Asume que la etiqueta está en la columna 'label'
-        
-        # Apply any additional transformations
-        if self.transform:
-            image = self.transform(image)
-        
-        return image, label
+        # Add a channel dimension
+        image = tf.expand_dims(image, axis=-1)
 
-def load_and_preprocess_image(img_path, label, img_height=256, img_width=256):
-    dicom_file = pydicom.dcmread(img_path)
-    image = dicom_file.pixel_array
-    
-    # Normalize the image
-    image = (image - np.min(image)) / (np.max(image) - np.min(image))
-    
-    # Resize the image
-    image = tf.image.resize(image, [img_height, img_width])
-    
-    # Add a channel dimension
-    image = tf.expand_dims(image, axis=-1)
-    
-    return image, label
+        # Append the processed image and label to the lists
+        images.append(image)
+        labels.append(label)
+
+    return images, labels
