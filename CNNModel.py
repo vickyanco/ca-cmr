@@ -3,9 +3,6 @@
 # author: María Victoria Anconetani
 # date: 29/08/2024
 
-import pydicom
-import numpy as np
-import pandas as pd
 import tensorflow as tf
 from tensorflow.python.keras import layers, models
 from keras import layers
