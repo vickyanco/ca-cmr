@@ -6,13 +6,14 @@
 import pandas as pd
 import numpy as np
 import pydicom
-import torch
 import tensorflow as tf
 from skimage.transform import resize
-from torch.utils.data import Dataset, DataLoader
 
-def preprocess_from_csv(csv_file, img_height=256, img_width=256):
+def preprocess_from_csv(csv_file, subset, img_height=256, img_width=256):
     df = pd.read_csv(csv_file)
+
+    # Filter the dataframe based on the 'set' column
+    df_subset = df[df['set'] == subset]
 
     # Initialize lists to hold the processed images and labels
     images = []
