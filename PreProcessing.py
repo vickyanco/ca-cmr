@@ -4,12 +4,11 @@
 # date: 01/08/2024
 
 import pandas as pd
-import numpy as np
 import pydicom
 import tensorflow as tf
-from skimage.transform import resize
 
 def preprocess_from_csv(csv_file, subset, img_height=256, img_width=256):
+    # Load the CSV file
     df = pd.read_csv(csv_file)
 
     # Filter the dataframe based on the 'set' column
@@ -20,19 +19,16 @@ def preprocess_from_csv(csv_file, subset, img_height=256, img_width=256):
     labels = []
 
     # Loop through each row in the DataFrame
-    for index, row in df.iterrows():
+    for _, row in df_subset.iterrows():
         img_path = row['filepath']
-        label = row['label']
-
-        # Convert label to 0 or 1
-        label = 1 if label.lower() == 'positive' else 0
+        label = 1 if row['label'] == 'positive' else 0
 
         # Read and preprocess the DICOM image
         dicom_file = pydicom.dcmread(img_path)
         image = dicom_file.pixel_array
 
         # Normalize the image
-        image = (image - np.min(image)) / (np.max(image) - np.min(image))
+        image = (image - tf.reduce_min(image)) / (tf.reduce_max(image) - tf.reduce_min(image))
 
         # Resize the image
         image = tf.image.resize(image, [img_height, img_width])
