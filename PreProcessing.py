@@ -30,11 +30,11 @@ def preprocess_from_csv(csv_file, subset, img_height=256, img_width=256):
         # Normalize the image
         image = (image - tf.reduce_min(image)) / (tf.reduce_max(image) - tf.reduce_min(image))
 
-        # Resize the image
-        image = tf.image.resize(image, [img_height, img_width])
-
         # Add a channel dimension
         image = tf.expand_dims(image, axis=-1)
+
+        # Resize the image
+        image = tf.image.resize(image, [img_height, img_width])
 
         # Append the processed image and label to the lists
         images.append(image)
