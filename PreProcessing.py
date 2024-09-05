@@ -29,10 +29,9 @@ def preprocess_from_csv(csv_file, subset, img_height=256, img_width=256):
         image = dicom_file.pixel_array
 
         # Check if the image is multi-frame (i.e., has more than 2 dimensions)
-        if image.ndim == 3:
-            # Select the first frame
-            image = image[0]
-            print(f"Multi-frame image detected. Using the first frame: {image.shape}")
+        if len(image.shape) > 2:
+            print(f"Skipping multi-frame image at {img_path}")
+            continue
 
         # Normalize the image
         image = (image - tf.reduce_min(image)) / (tf.reduce_max(image) - tf.reduce_min(image))
