@@ -10,24 +10,24 @@ from PreProcessing import preprocess_from_csv
 from CNNModel import MyCNN
 
 # Load and preprocess training, validation, and test sets
-train_images, train_labels = preprocess_from_csv('valid_dicom_files.csv', subset='PosTrain')
+train_images_pos, train_labels_pos = preprocess_from_csv('valid_dicom_files.csv', subset='PosTrain')
 train_images_neg, train_labels_neg = preprocess_from_csv('valid_dicom_files.csv', subset='NegTrain')
 
-val_images, val_labels = preprocess_from_csv('valid_dicom_files.csv', subset='PosVal')
+val_images_pos, val_labels_pos = preprocess_from_csv('valid_dicom_files.csv', subset='PosVal')
 val_images_neg, val_labels_neg = preprocess_from_csv('valid_dicom_files.csv', subset='NegVal')
 
-test_images, test_labels = preprocess_from_csv('valid_dicom_files.csv', subset='PosTest')
+test_images_pos, test_labels_pos = preprocess_from_csv('valid_dicom_files.csv', subset='PosTest')
 test_images_neg, test_labels_neg = preprocess_from_csv('valid_dicom_files.csv', subset='NegTest')
 
 # Combine positive and negative images and labels
-train_images_combined = np.concatenate([train_images, train_images_neg], axis=0)
-train_labels_combined = np.concatenate([train_labels, train_labels_neg], axis=0)
+train_images_combined = np.concatenate([train_images_pos, train_images_neg], axis=0)
+train_labels_combined = np.concatenate([train_labels_pos, train_labels_neg], axis=0)
 
-val_images_combined = np.concatenate([val_images, val_images_neg], axis=0)
-val_labels_combined = np.concatenate([val_labels, val_labels_neg], axis=0)
+val_images_combined = np.concatenate([val_images_pos, val_images_neg], axis=0)
+val_labels_combined = np.concatenate([val_labels_pos, val_labels_neg], axis=0)
 
-test_images_combined = np.concatenate([test_images, test_images_neg], axis=0)
-test_labels_combined = np.concatenate([test_labels, test_labels_neg], axis=0)
+test_images_combined = np.concatenate([test_images_pos, test_images_neg], axis=0)
+test_labels_combined = np.concatenate([test_labels_pos, test_labels_neg], axis=0)
 
 # Convert to TensorFlow tensors
 train_dataset = tf.data.Dataset.from_tensor_slices((tf.convert_to_tensor(train_images_combined, dtype=tf.float32), tf.convert_to_tensor(train_labels_combined, dtype=tf.int32)))
