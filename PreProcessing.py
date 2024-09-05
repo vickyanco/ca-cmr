@@ -37,7 +37,7 @@ def preprocess_from_csv(csv_file, subset, img_height=256, img_width=256):
         image = tf.image.resize(image, [img_height, img_width])
 
         # Append the processed image and label to the lists
-        images.append(image)
+        images.append(image.numpy()) # Convert TensorFlow tensor to NumPy array
         labels.append(label)
 
     return images, labels
