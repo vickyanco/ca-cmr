@@ -35,7 +35,7 @@ val_dataset = tf.data.Dataset.from_tensor_slices((tf.convert_to_tensor(val_image
 test_dataset = tf.data.Dataset.from_tensor_slices((tf.convert_to_tensor(test_images_combined, dtype=tf.float32), tf.convert_to_tensor(test_labels_combined, dtype=tf.int32)))
 
 # Shuffle and batch the datasets
-train_dataset = train_dataset.shuffle(len(train_images_combined)).batch(16)
+train_dataset = train_dataset.shuffle(len(train_images_combined)).batch(8)
 val_dataset = val_dataset.batch(16)
 test_dataset = test_dataset.batch(16)
 
