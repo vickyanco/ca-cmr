@@ -8,7 +8,7 @@ import numpy as np
 import pydicom
 import tensorflow as tf
 
-def preprocess_from_csv(csv_file, subset, img_height=256, img_width=256):
+def preprocess_from_csv(csv_file, subset, img_height=128, img_width=128):
     # Load the CSV file
     df = pd.read_csv(csv_file)
 
