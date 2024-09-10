@@ -62,7 +62,7 @@ class MyCNN:
         return history
 
     def save_model(self, filepath):
-        self.model.save(filepath)
+        self.model.save(filepath, save_format='tf')
 
     def load_model(self, filepath):
         self.model = tf.keras.models.load_model(filepath)
