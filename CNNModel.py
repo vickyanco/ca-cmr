@@ -48,7 +48,8 @@ class MyCNN:
         # Output Layer
         model.add(layers.Dense(self.num_classes, activation='softmax'))
 
-        model.compile(optimizer='adam', loss='sparse_categorical_crossentropy', metrics=['accuracy'])
+        optimizer = tf.keras.optimizers.Adam(learning_rate=0.0001)
+        model.compile(optimizer=optimizer, loss='sparse_categorical_crossentropy', metrics=['accuracy'])
         
         return model
 
