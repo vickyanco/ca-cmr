@@ -8,7 +8,7 @@ from tensorflow.python.keras import layers, models
 from keras import layers
 
 class MyCNN:
-    def __init__(self, input_shape=(256, 256, 1), num_classes=2):
+    def __init__(self, input_shape=(256, 256, 1), num_classes=1):
         self.input_shape = input_shape
         self.num_classes = num_classes
         self.model = self.build_model()
@@ -46,10 +46,10 @@ class MyCNN:
         model.add(layers.Dense(16, activation='relu'))
 
         # Output Layer
-        model.add(layers.Dense(self.num_classes, activation='softmax'))
+        model.add(layers.Dense(self.num_classes, activation='sigmoid'))
 
         optimizer = tf.keras.optimizers.Adam(learning_rate=0.0001)
-        model.compile(optimizer=optimizer, loss='sparse_categorical_crossentropy', metrics=['accuracy'])
+        model.compile(optimizer=optimizer, loss='binary_crossentropy', metrics=['accuracy'])
         
         return model
 
