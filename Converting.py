@@ -16,10 +16,10 @@ for root, dirs, files in os.walk(inputdir):
     os.makedirs(output_dir, exist_ok=True)
     
     for file in files:
-        if file.endswith('.dcm'):  
-            file_path = os.path.join(root, file) 
-            ds = pydicom.dcmread(file_path)  
-            img = ds.pixel_array  
-            output_file = os.path.join(output_dir, file.replace('.dcm', '.png')) 
-            cv2.imwrite(output_file, img)
-            print(f'Guardado: {output_file}')
+        file_path = os.path.join(root, file)
+        print(f'Processing file: {file_path}') 
+        ds = pydicom.dcmread(file_path)  
+        img = ds.pixel_array  
+        output_file = os.path.join(output_dir, file.replace('.dcm', '.png')) 
+        cv2.imwrite(output_file, img)
+        print(f'Saved: {output_file}')
