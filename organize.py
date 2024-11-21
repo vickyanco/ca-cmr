@@ -10,7 +10,7 @@ import shutil
 root_dir = 'D:/CA EN CMR/convertidas'
 desired_folders = {'casos', 'controles'}
 
-for folder in os.listdir(root_dir):
+for folder in desired_folders:
     folder_path = os.path.join(root_dir, folder)
     
     # Skip files or folders not in the desired list
